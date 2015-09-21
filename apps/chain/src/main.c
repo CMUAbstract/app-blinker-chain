@@ -1,6 +1,3 @@
-// #define ENABLE_WATCHDOG
-
-
 #include <msp430.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -9,9 +6,6 @@
 
 /* Variable placement in nonvolatile memory; linker puts this in right place */
 #define __fram __attribute__((section(".fram_vars")))
-
-// TODO: the interval calculation doesn't add up for some reason
-#define WATCHDOG_INTERVAL_BITS WDTIS__8192K // by trial and error: yields a few seconds
 
 // Sentinel value that indicates where non-volatile state was initialized
 #define NV_STATE_MAGIC 0xdeadbeef
@@ -30,9 +24,7 @@ static void burn(uint32_t iters)
 
 static void init_hw()
 {
-#ifndef ENABLE_WATCHDOG
     WDTCTL = WDTPW | WDTHOLD;  // Stop watchdog timer
-#endif
 
     PM5CTL0 &= ~LOCKLPM5;
 
@@ -52,10 +44,6 @@ static void init_hw()
     CSCTL1 = DCOFSEL0 | DCOFSEL1;
     CSCTL2 = SELA_0 | SELS_3 | SELM_3;
     CSCTL3 = DIVA_0 | DIVS_0 | DIVM_0;
-
-#ifdef ENABLE_WATCHDOG
-    WDTCTL = WDTPW | WATCHDOG_INTERVAL_BITS | WDTCNTCL;
-#endif
 }
 
 static void init_nv_state()
@@ -66,21 +54,26 @@ static void init_nv_state()
     }
 }
 
+void task_1()
+{
+    GPIO(PORT_LED1, OUT) ^= BIT(PIN_LED1);
+    burn(50000);
+}
+
+void task_2()
+{
+    GPIO(PORT_LED2, OUT) ^= BIT(PIN_LED2);
+    burn(50000);
+}
+
 int main() {
     init_hw();
 
     init_nv_state();
 
     while(1) {
-#ifdef ENABLE_WATCHDOG
-        WDTCTL = WDTPW | WATCHDOG_INTERVAL_BITS | WDTCNTCL;  // poke watchdog
-#endif
-
-        GPIO(PORT_LED1, OUT) ^= BIT(PIN_LED1);
-        burn(50000);
-
-        GPIO(PORT_LED2, OUT) ^= BIT(PIN_LED2);
-        burn(50000);
+        task_1();
+        task_2();
 
         ++nv_iter;
     }
