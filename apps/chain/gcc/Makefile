@@ -6,7 +6,7 @@ OBJECTS = \
 include ../../../Makefile.common.gcc
 
 CFLAGS += \
-	-I $(LIBEDB_ROOT)/src/include \
+	-I $(LIBCHAIN_ROOT)/src/include \
 
 LFLAGS = \
 

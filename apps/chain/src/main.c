@@ -2,6 +2,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include <libchain/chain.h>
+
 #include "pin_assign.h"
 
 /* Variable placement in nonvolatile memory; linker puts this in right place */
@@ -9,8 +11,6 @@
 
 // Sentinel value that indicates where non-volatile state was initialized
 #define NV_STATE_MAGIC 0xdeadbeef
-
-typedef void (task_func_t)(void);
 
 void task_1();
 void task_2();
@@ -61,44 +61,21 @@ static void init_nv_state()
 
 void task_1()
 {
-    task_func_t *loc;
-
     GPIO(PORT_LED1, OUT) ^= BIT(PIN_LED1);
     burn(50000);
-
-    loc = task_2;
-    __asm__ ( "mov #0x2400, r1\n"
-          "br %0\n"
-            :
-            : "r" (loc));
+    transition_to(task_2);
 }
 
 void task_2()
 {
-    task_func_t *loc;
-
     GPIO(PORT_LED2, OUT) ^= BIT(PIN_LED2);
     burn(50000);
-
-    loc = task_1;
-    __asm__ ( "mov #0x2400, r1\n"
-          "br %0\n"
-            :
-            : "r" (loc));
+    transition_to(task_1);
 }
 
 int main() {
-    task_func_t *loc;
-
     init_hw();
-
     init_nv_state();
-
-    loc = task_1;
-    __asm__ ( "mov #0x2400, r1\n"
-          "br %0\n"
-            :
-            : "r" (loc));
-
-    return 0;
+    transition_to(task_1);
+    return 0; // TODO: write our own entry point and get rid of this
 }
