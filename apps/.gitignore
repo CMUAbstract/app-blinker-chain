@@ -1,4 +1,4 @@
-chain
+*.out
 *.asm
 *.o
 *.d
