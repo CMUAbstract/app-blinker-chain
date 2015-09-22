@@ -1,4 +1,4 @@
-EXEC = chain
+EXEC = chain.out
 
 OBJECTS = \
 	main.o \
@@ -9,7 +9,9 @@ CFLAGS += \
 	-I $(LIBCHAIN_ROOT)/src/include \
 
 LFLAGS = \
+	-L $(LIBCHAIN_ROOT)/gcc \
 
 LIBS = \
+    -lchain \
 
 VPATH = $(SRC_DIR)
