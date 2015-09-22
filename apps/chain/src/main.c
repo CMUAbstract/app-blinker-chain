@@ -6,7 +6,7 @@
 
 #include "pin_assign.h"
 
-void task_1();
+void entry_task();
 void task_2();
 
 volatile unsigned work_x;
@@ -18,7 +18,7 @@ static void burn(uint32_t iters)
         work_x++;
 }
 
-static void init_hw()
+void init()
 {
     WDTCTL = WDTPW | WDTHOLD;  // Stop watchdog timer
 
@@ -42,7 +42,7 @@ static void init_hw()
     CSCTL3 = DIVA_0 | DIVS_0 | DIVM_0;
 }
 
-void task_1()
+void entry_task()
 {
     GPIO(PORT_LED1, OUT) ^= BIT(PIN_LED1);
     burn(50000);
@@ -53,11 +53,5 @@ void task_2()
 {
     GPIO(PORT_LED2, OUT) ^= BIT(PIN_LED2);
     burn(50000);
-    transition_to(task_1);
-}
-
-int main() {
-    init_hw();
-    transition_to(task_1);
-    return 0; // TODO: write our own entry point and get rid of this
+    transition_to(entry_task);
 }
