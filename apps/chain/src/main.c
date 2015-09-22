@@ -6,17 +6,8 @@
 
 #include "pin_assign.h"
 
-/* Variable placement in nonvolatile memory; linker puts this in right place */
-#define __fram __attribute__((section(".fram_vars")))
-
-// Sentinel value that indicates where non-volatile state was initialized
-#define NV_STATE_MAGIC 0xdeadbeef
-
 void task_1();
 void task_2();
-
-volatile __fram uint32_t nv_state_magic;
-volatile __fram unsigned nv_iter;
 
 volatile unsigned work_x;
 
@@ -51,14 +42,6 @@ static void init_hw()
     CSCTL3 = DIVA_0 | DIVS_0 | DIVM_0;
 }
 
-static void init_nv_state()
-{
-    if (nv_state_magic != NV_STATE_MAGIC) {
-        nv_state_magic = NV_STATE_MAGIC;
-        nv_iter = 0;
-    }
-}
-
 void task_1()
 {
     GPIO(PORT_LED1, OUT) ^= BIT(PIN_LED1);
@@ -75,7 +58,6 @@ void task_2()
 
 int main() {
     init_hw();
-    init_nv_state();
     transition_to(task_1);
     return 0; // TODO: write our own entry point and get rid of this
 }
