@@ -6,6 +6,10 @@
 
 #include "pin_assign.h"
 
+#define TASK_START_DURATION_ITERS 200000
+#define BLINK_DURATION_ITERS      100000
+#define NUM_BLINKS_PER_TASK       5
+
 void task_1();
 void task_2();
 
@@ -44,15 +48,35 @@ void init()
 
 void task_1()
 {
-    GPIO(PORT_LED1, OUT) ^= BIT(PIN_LED1);
-    burn(50000);
+    unsigned i;
+
+    // Solid flash signifying beginning of task
+    GPIO(PORT_LED1, OUT) |= BIT(PIN_LED1);
+    burn(TASK_START_DURATION_ITERS);
+    GPIO(PORT_LED1, OUT) &= ~BIT(PIN_LED1);
+    burn(TASK_START_DURATION_ITERS);
+
+    for (i = 0; i < NUM_BLINKS_PER_TASK * 2; i++) {
+        GPIO(PORT_LED1, OUT) ^= BIT(PIN_LED1);
+        burn(BLINK_DURATION_ITERS);
+    }
     transition_to(task_2);
 }
 
 void task_2()
 {
-    GPIO(PORT_LED2, OUT) ^= BIT(PIN_LED2);
-    burn(50000);
+    unsigned i;
+
+    // Solid flash signifying beginning of task
+    GPIO(PORT_LED2, OUT) |= BIT(PIN_LED2);
+    burn(TASK_START_DURATION_ITERS);
+    GPIO(PORT_LED2, OUT) &= ~BIT(PIN_LED2);
+    burn(TASK_START_DURATION_ITERS);
+
+    for (i = 0; i < NUM_BLINKS_PER_TASK * 2; i++) {
+        GPIO(PORT_LED2, OUT) ^= BIT(PIN_LED2);
+        burn(BLINK_DURATION_ITERS);
+    }
     transition_to(task_1);
 }
 
