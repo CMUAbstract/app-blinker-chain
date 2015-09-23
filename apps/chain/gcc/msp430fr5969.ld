@@ -218,15 +218,6 @@ SECTIONS
     KEEP (*(.dtors))
   } > ROM
 
-  .fram_vars :
-  {
-    . = ALIGN(2);
-    PROVIDE (__fram_vars_start = .);
-    *(.fram_vars)
-    . = ALIGN(2);
-    PROVIDE (__fram_vars_end = .);
-  } > ROM
-
   .upper.rodata :
   {
     *(.upper.rodata.* .upper.rodata)
@@ -266,6 +257,15 @@ SECTIONS
      start/stop symbols are also assumed word-aligned.  */
   PROVIDE(__romdatastart = LOADADDR(.data));
   PROVIDE (__romdatacopysize = SIZEOF(.data));
+
+  .fram_vars :
+  {
+    . = ALIGN(2);
+    PROVIDE (__fram_vars_start = .);
+    *(.fram_vars)
+    . = ALIGN(2);
+    PROVIDE (__fram_vars_end = .);
+  } > ROM
 
   .upper.data :
   {
