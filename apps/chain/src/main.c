@@ -6,7 +6,7 @@
 
 #include "pin_assign.h"
 
-void entry_task();
+void task_1();
 void task_2();
 
 volatile unsigned work_x;
@@ -42,7 +42,7 @@ void init()
     CSCTL3 = DIVA_0 | DIVS_0 | DIVM_0;
 }
 
-void entry_task()
+void task_1()
 {
     GPIO(PORT_LED1, OUT) ^= BIT(PIN_LED1);
     burn(50000);
@@ -53,5 +53,8 @@ void task_2()
 {
     GPIO(PORT_LED2, OUT) ^= BIT(PIN_LED2);
     burn(50000);
-    transition_to(entry_task);
+    transition_to(task_1);
 }
+
+ENTRY_TASK(task_1)
+INIT_FUNC(init)
