@@ -10,6 +10,14 @@
 #define BLINK_DURATION_ITERS      100000
 #define NUM_BLINKS_PER_TASK       5
 
+typedef struct {
+    chan_field_unsigned_t blinks;
+} msg_t;
+
+CHANNEL(task_init, task_1, msg_t);
+CHANNEL(task_1, task_2, msg_t);
+CHANNEL(task_2, task_1, msg_t);
+
 void task_1();
 void task_2();
 
@@ -46,9 +54,16 @@ void init()
     CSCTL3 = DIVA_0 | DIVS_0 | DIVM_0;
 }
 
+void task_init()
+{
+    CHAN_OUT(task_init, task_1, blinks, NUM_BLINKS_PER_TASK);
+    transition_to(task_1);
+}
+
 void task_1()
 {
     unsigned i;
+    unsigned blinks;
 
     // Solid flash signifying beginning of task
     GPIO(PORT_LED1, OUT) |= BIT(PIN_LED1);
@@ -56,16 +71,24 @@ void task_1()
     GPIO(PORT_LED1, OUT) &= ~BIT(PIN_LED1);
     burn(TASK_START_DURATION_ITERS);
 
-    for (i = 0; i < NUM_BLINKS_PER_TASK * 2; i++) {
+    CHAN_IN2(blinks, blinks, task_1, task_init, task_2);
+
+    for (i = 0; i < blinks * 2; i++) {
         GPIO(PORT_LED1, OUT) ^= BIT(PIN_LED1);
         burn(BLINK_DURATION_ITERS);
     }
+
+    blinks++;
+
+    CHAN_OUT(task_1, task_2, blinks, blinks);
+
     transition_to(task_2);
 }
 
 void task_2()
 {
     unsigned i;
+    unsigned blinks;
 
     // Solid flash signifying beginning of task
     GPIO(PORT_LED2, OUT) |= BIT(PIN_LED2);
@@ -73,12 +96,19 @@ void task_2()
     GPIO(PORT_LED2, OUT) &= ~BIT(PIN_LED2);
     burn(TASK_START_DURATION_ITERS);
 
-    for (i = 0; i < NUM_BLINKS_PER_TASK * 2; i++) {
+    CHAN_IN1(blinks, blinks, task_2, task_1);
+
+    for (i = 0; i < blinks * 2; i++) {
         GPIO(PORT_LED2, OUT) ^= BIT(PIN_LED2);
         burn(BLINK_DURATION_ITERS);
     }
+
+    blinks++;
+
+    CHAN_OUT(task_2, task_1, blinks, blinks);
+
     transition_to(task_1);
 }
 
-ENTRY_TASK(task_1)
+ENTRY_TASK(task_init)
 INIT_FUNC(init)
