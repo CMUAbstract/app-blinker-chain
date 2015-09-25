@@ -11,7 +11,7 @@
 #define NUM_BLINKS_PER_TASK       5
 
 typedef struct {
-    chan_field_unsigned_t blinks;
+    CHAN_FIELD(unsigned, blinks);
 } msg_t;
 
 CHANNEL(task_init, task_1, msg_t);
@@ -71,7 +71,7 @@ void task_1()
     GPIO(PORT_LED1, OUT) &= ~BIT(PIN_LED1);
     burn(TASK_START_DURATION_ITERS);
 
-    CHAN_IN2(blinks, blinks, task_1, task_init, task_2);
+    blinks = *CHAN_IN2(blinks, task_1, task_init, task_2);
 
     for (i = 0; i < blinks * 2; i++) {
         GPIO(PORT_LED1, OUT) ^= BIT(PIN_LED1);
@@ -96,7 +96,7 @@ void task_2()
     GPIO(PORT_LED2, OUT) &= ~BIT(PIN_LED2);
     burn(TASK_START_DURATION_ITERS);
 
-    CHAN_IN1(blinks, blinks, task_2, task_1);
+    blinks = *CHAN_IN1(blinks, task_2, task_1);
 
     for (i = 0; i < blinks * 2; i++) {
         GPIO(PORT_LED2, OUT) ^= BIT(PIN_LED2);
