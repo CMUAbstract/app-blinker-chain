@@ -20,7 +20,13 @@ typedef struct {
     CHAN_FIELD(unsigned, tick);
 } msg_tick;
 
+TASK(0, task_init)
+TASK(1, task_1)
+TASK(2, task_2)
+TASK(3, task_3)
+
 CHANNEL(task_init, task_1, msg_blinks);
+CHANNEL(task_init, task_3, msg_tick);
 CHANNEL(task_1, task_2, msg_blinks);
 CHANNEL(task_2, task_1, msg_blinks);
 SELF_CHANNEL(task_3, msg_tick);
@@ -65,7 +71,7 @@ void init()
 void task_init()
 {
     CHAN_OUT(blinks, NUM_BLINKS_PER_TASK, CH(task_init, task_1));
-    transition_to(task_1);
+    TRANSITION_TO(task_1);
 }
 
 void task_1()
@@ -90,7 +96,7 @@ void task_1()
 
     CHAN_OUT(blinks, blinks, CH(task_1, task_2));
 
-    transition_to(task_2);
+    TRANSITION_TO(task_2);
 }
 
 void task_2()
@@ -115,12 +121,12 @@ void task_2()
 
     CHAN_OUT(blinks, blinks, CH(task_2, task_1));
 
-    transition_to(task_3);
+    TRANSITION_TO(task_3);
 }
 
 void task_3()
 {
-    unsigned wait_tick = *CHAN_IN1(tick, SELF_CH(task_3));
+    unsigned wait_tick = *CHAN_IN1(tick, SELF_IN_CH(task_3));
 
     GPIO(PORT_LED1, OUT) |= BIT(PIN_LED1);
     GPIO(PORT_LED2, OUT) |= BIT(PIN_LED2);
@@ -130,11 +136,11 @@ void task_3()
     burn(WAIT_TICK_DURATION_ITERS);
 
     if (++wait_tick < WAIT_TICKS) {
-        CHAN_OUT(tick, wait_tick, SELF_CH(task_3));
-        transition_to(task_3);
+        CHAN_OUT(tick, wait_tick, SELF_OUT_CH(task_3));
+        TRANSITION_TO(task_3);
     } else {
-        CHAN_OUT(tick, 0, SELF_CH(task_3));
-        transition_to(task_1);
+        CHAN_OUT(tick, 0, SELF_OUT_CH(task_3));
+        TRANSITION_TO(task_1);
     }
 }
 
