@@ -71,6 +71,7 @@ void init()
 void task_init()
 {
     CHAN_OUT(blinks, NUM_BLINKS_PER_TASK, CH(task_init, task_1));
+    CHAN_OUT(tick, 0, CH(task_init, task_3));
     TRANSITION_TO(task_1);
 }
 
@@ -126,7 +127,7 @@ void task_2()
 
 void task_3()
 {
-    unsigned wait_tick = *CHAN_IN1(tick, SELF_IN_CH(task_3));
+    unsigned wait_tick = *CHAN_IN(tick, CH(task_init, task_3), SELF_IN_CH(task_3));
 
     GPIO(PORT_LED1, OUT) |= BIT(PIN_LED1);
     GPIO(PORT_LED2, OUT) |= BIT(PIN_LED2);
