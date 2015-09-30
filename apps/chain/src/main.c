@@ -56,7 +56,7 @@ void init()
 
 void task_init()
 {
-    CHAN_OUT(task_init, task_1, blinks, NUM_BLINKS_PER_TASK);
+    CHAN_OUT(blinks, NUM_BLINKS_PER_TASK, CH(task_init, task_1));
     transition_to(task_1);
 }
 
@@ -71,7 +71,7 @@ void task_1()
     GPIO(PORT_LED1, OUT) &= ~BIT(PIN_LED1);
     burn(TASK_START_DURATION_ITERS);
 
-    blinks = *CHAN_IN2(blinks, task_1, task_init, task_2);
+    blinks = *CHAN_IN(blinks, CH(task_init, task_1), CH(task_2, task_1));
 
     for (i = 0; i < blinks * 2; i++) {
         GPIO(PORT_LED1, OUT) ^= BIT(PIN_LED1);
@@ -80,7 +80,7 @@ void task_1()
 
     blinks++;
 
-    CHAN_OUT(task_1, task_2, blinks, blinks);
+    CHAN_OUT(blinks, blinks, CH(task_1, task_2));
 
     transition_to(task_2);
 }
@@ -96,7 +96,7 @@ void task_2()
     GPIO(PORT_LED2, OUT) &= ~BIT(PIN_LED2);
     burn(TASK_START_DURATION_ITERS);
 
-    blinks = *CHAN_IN1(blinks, task_2, task_1);
+    blinks = *CHAN_IN1(blinks, CH(task_1, task_2));
 
     for (i = 0; i < blinks * 2; i++) {
         GPIO(PORT_LED2, OUT) ^= BIT(PIN_LED2);
@@ -105,7 +105,7 @@ void task_2()
 
     blinks++;
 
-    CHAN_OUT(task_2, task_1, blinks, blinks);
+    CHAN_OUT(blinks, blinks, CH(task_2, task_1));
 
     transition_to(task_1);
 }
