@@ -31,10 +31,6 @@ CHANNEL(task_1, task_2, msg_blinks);
 CHANNEL(task_2, task_1, msg_blinks);
 SELF_CHANNEL(task_3, msg_tick);
 
-void task_1();
-void task_2();
-void task_3();
-
 volatile unsigned work_x;
 
 static void burn(uint32_t iters)
