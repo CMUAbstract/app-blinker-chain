@@ -113,7 +113,7 @@ void task_1()
     burn(TASK_START_DURATION_ITERS);
 
     blinks = *CHAN_IN(blinks, CH(task_init, task_1), CH(task_2, task_1));
-    duty_cycle = *CHAN_IN1(duty_cycle, MC_IN_CH(ch_duty_cycle, task_init));
+    duty_cycle = *CHAN_IN1(duty_cycle, MC_IN_CH(ch_duty_cycle, task_init, task_1));
 
     blink_led1(blinks, duty_cycle);
     blinks++;
@@ -135,7 +135,7 @@ void task_2()
     burn(TASK_START_DURATION_ITERS);
 
     blinks = *CHAN_IN1(blinks, CH(task_1, task_2));
-    duty_cycle = *CHAN_IN1(duty_cycle, MC_IN_CH(ch_duty_cycle, task_init));
+    duty_cycle = *CHAN_IN1(duty_cycle, MC_IN_CH(ch_duty_cycle, task_init, task_2));
 
     blink_led2(blinks, duty_cycle);
     blinks++;
