@@ -34,7 +34,7 @@ CHANNEL(task_init, task_3, msg_tick);
 CHANNEL(task_1, task_2, msg_blinks);
 CHANNEL(task_2, task_1, msg_blinks);
 SELF_CHANNEL(task_3, msg_tick);
-MULTICAST_CHANNEL(ch_duty_cycle, msg_duty_cycle);
+MULTICAST_CHANNEL(msg_duty_cycle, ch_duty_cycle, task_init, task_1, task_2);
 
 volatile unsigned work_x;
 
