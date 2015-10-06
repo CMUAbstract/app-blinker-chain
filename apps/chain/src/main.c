@@ -20,6 +20,10 @@ typedef struct {
     CHAN_FIELD(unsigned, tick);
 } msg_tick;
 
+typedef struct {
+    CHAN_FIELD(unsigned, duty_cycle);
+} msg_duty_cycle;
+
 TASK(0, task_init)
 TASK(1, task_1)
 TASK(2, task_2)
@@ -30,6 +34,7 @@ CHANNEL(task_init, task_3, msg_tick);
 CHANNEL(task_1, task_2, msg_blinks);
 CHANNEL(task_2, task_1, msg_blinks);
 SELF_CHANNEL(task_3, msg_tick);
+MULTICAST_CHANNEL(ch_duty_cycle, msg_duty_cycle);
 
 volatile unsigned work_x;
 
@@ -64,17 +69,42 @@ void init()
     CSCTL3 = DIVA_0 | DIVS_0 | DIVM_0;
 }
 
+static void blink_led1(unsigned blinks, unsigned duty_cycle) {
+    unsigned i;
+
+    for (i = 0; i < blinks; ++i) {
+        GPIO(PORT_LED1, OUT) |= BIT(PIN_LED1);
+        burn(BLINK_DURATION_ITERS * 2 * duty_cycle / 100);
+
+        GPIO(PORT_LED1, OUT) &= ~BIT(PIN_LED1);
+        burn(BLINK_DURATION_ITERS * 2 * (100 - duty_cycle) / 100);
+    }
+}
+
+static void blink_led2(unsigned blinks, unsigned duty_cycle) {
+    unsigned i;
+
+    for (i = 0; i < blinks; ++i) {
+        GPIO(PORT_LED2, OUT) |= BIT(PIN_LED2);
+        burn(BLINK_DURATION_ITERS * 2 * duty_cycle / 100);
+
+        GPIO(PORT_LED2, OUT) &= ~BIT(PIN_LED2);
+        burn(BLINK_DURATION_ITERS * 2 * (100 - duty_cycle) / 100);
+    }
+}
+
 void task_init()
 {
     CHAN_OUT(blinks, NUM_BLINKS_PER_TASK, CH(task_init, task_1));
     CHAN_OUT(tick, 0, CH(task_init, task_3));
+    CHAN_OUT(duty_cycle, 75, MC_CH(ch_duty_cycle));
     TRANSITION_TO(task_1);
 }
 
 void task_1()
 {
-    unsigned i;
     unsigned blinks;
+    unsigned duty_cycle;
 
     // Solid flash signifying beginning of task
     GPIO(PORT_LED1, OUT) |= BIT(PIN_LED1);
@@ -83,12 +113,9 @@ void task_1()
     burn(TASK_START_DURATION_ITERS);
 
     blinks = *CHAN_IN(blinks, CH(task_init, task_1), CH(task_2, task_1));
+    duty_cycle = *CHAN_IN1(duty_cycle, MC_CH(ch_duty_cycle));
 
-    for (i = 0; i < blinks * 2; i++) {
-        GPIO(PORT_LED1, OUT) ^= BIT(PIN_LED1);
-        burn(BLINK_DURATION_ITERS);
-    }
-
+    blink_led1(blinks, duty_cycle);
     blinks++;
 
     CHAN_OUT(blinks, blinks, CH(task_1, task_2));
@@ -98,8 +125,8 @@ void task_1()
 
 void task_2()
 {
-    unsigned i;
     unsigned blinks;
+    unsigned duty_cycle;
 
     // Solid flash signifying beginning of task
     GPIO(PORT_LED2, OUT) |= BIT(PIN_LED2);
@@ -108,12 +135,9 @@ void task_2()
     burn(TASK_START_DURATION_ITERS);
 
     blinks = *CHAN_IN1(blinks, CH(task_1, task_2));
+    duty_cycle = *CHAN_IN1(duty_cycle, MC_CH(ch_duty_cycle));
 
-    for (i = 0; i < blinks * 2; i++) {
-        GPIO(PORT_LED2, OUT) ^= BIT(PIN_LED2);
-        burn(BLINK_DURATION_ITERS);
-    }
-
+    blink_led2(blinks, duty_cycle);
     blinks++;
 
     CHAN_OUT(blinks, blinks, CH(task_2, task_1));
