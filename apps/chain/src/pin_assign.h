@@ -15,10 +15,10 @@
 #define GPIO(port, reg) GPIO_INNER(port, reg)
 
 #if defined(BOARD_WISP)
-#define     PORT_LED1           4
-#define     PIN_LED1            0
-#define     PORT_LED2           J
-#define     PIN_LED2            6
+#define     PORT_LED_1           4
+#define     PIN_LED_1            0
+#define     PORT_LED_2           J
+#define     PIN_LED_2            6
 
 #define     PORT_AUX            3
 #define        PIN_AUX_1            4
@@ -30,12 +30,12 @@
 
 #elif defined(BOARD_MSP_TS430)
 
-#define     PORT_LED1           1
-#define     PIN_LED1            1
-#define     PORT_LED2           1
-#define     PIN_LED2            2
-#define     PORT_LED3           1
-#define     PIN_LED3            0
+#define     PORT_LED_1           1
+#define     PIN_LED_1            1
+#define     PORT_LED_2           1
+#define     PIN_LED_2            2
+#define     PORT_LED_3           1
+#define     PIN_LED_3            0
 
 #define     PORT_AUX            3
 #define     PIN_AUX_1           4
