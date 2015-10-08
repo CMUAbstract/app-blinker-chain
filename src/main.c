@@ -157,7 +157,7 @@ void task_3()
 {
     unsigned wait_tick = *CHAN_IN(tick, CH(task_init, task_3), SELF_IN_CH(task_3));
 
-    printf("task3\r\n");
+    printf("task 3\r\n");
 
     GPIO(PORT_LED_1, OUT) |= BIT(PIN_LED_1);
     GPIO(PORT_LED_2, OUT) |= BIT(PIN_LED_2);
