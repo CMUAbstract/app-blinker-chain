@@ -1,4 +1,4 @@
-EXEC = chain.out
+EXEC = blinker.out
 
 OBJECTS = \
 	main.o \
