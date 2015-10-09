@@ -17,17 +17,17 @@
 // If you link-in wisp-base, then you have to define some symbols.
 uint8_t usrBank[USRBANK_SIZE];
 
-typedef struct {
+struct msg_blinks {
     CHAN_FIELD(unsigned, blinks);
-} msg_blinks;
+};
 
-typedef struct {
+struct msg_tick {
     CHAN_FIELD(unsigned, tick);
-} msg_tick;
+};
 
-typedef struct {
+struct msg_duty_cycle {
     CHAN_FIELD(unsigned, duty_cycle);
-} msg_duty_cycle;
+};
 
 TASK(0, task_init)
 TASK(1, task_1)
@@ -118,7 +118,7 @@ void task_1()
     GPIO(PORT_LED_1, OUT) &= ~BIT(PIN_LED_1);
     burn(TASK_START_DURATION_ITERS);
 
-    blinks = *CHAN_IN(blinks, CH(task_init, task_1), CH(task_2, task_1));
+    blinks = *CHAN_IN2(blinks, CH(task_init, task_1), CH(task_2, task_1));
     duty_cycle = *CHAN_IN1(duty_cycle, MC_IN_CH(ch_duty_cycle, task_init, task_1));
 
     blink_led1(blinks, duty_cycle);
@@ -155,7 +155,8 @@ void task_2()
 
 void task_3()
 {
-    unsigned wait_tick = *CHAN_IN(tick, CH(task_init, task_3), SELF_IN_CH(task_3));
+    unsigned wait_tick = *CHAN_IN2(tick, CH(task_init, task_3),
+                                         SELF_IN_CH(task_3));
 
     printf("task 3\r\n");
 
