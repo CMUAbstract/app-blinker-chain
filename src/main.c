@@ -121,6 +121,8 @@ void task_1()
     blinks = *CHAN_IN2(blinks, CH(task_init, task_1), CH(task_2, task_1));
     duty_cycle = *CHAN_IN1(duty_cycle, MC_IN_CH(ch_duty_cycle, task_init, task_1));
 
+    printf("task 1: blinks %u dc %u\r\n", blinks, duty_cycle);
+
     blink_led1(blinks, duty_cycle);
     blinks++;
 
@@ -145,6 +147,8 @@ void task_2()
     blinks = *CHAN_IN1(blinks, CH(task_1, task_2));
     duty_cycle = *CHAN_IN1(duty_cycle, MC_IN_CH(ch_duty_cycle, task_init, task_2));
 
+    printf("task 2: blinks %u dc %u\r\n", blinks, duty_cycle);
+
     blink_led2(blinks, duty_cycle);
     blinks++;
 
@@ -158,7 +162,7 @@ void task_3()
     unsigned wait_tick = *CHAN_IN2(tick, CH(task_init, task_3),
                                          SELF_IN_CH(task_3));
 
-    printf("task 3\r\n");
+    printf("task 3: wait tick %u\r\n", wait_tick);
 
     GPIO(PORT_LED_1, OUT) |= BIT(PIN_LED_1);
     GPIO(PORT_LED_2, OUT) |= BIT(PIN_LED_2);
