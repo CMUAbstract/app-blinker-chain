@@ -3,24 +3,39 @@ EXEC = blinker.out
 OBJECTS = \
 	main.o \
 
+LIBCHAIN_ENABLE_DIAGNOSTICS ?= 0
+CONFIG_LIBEDB_PRINTF ?= 0
+CONFIG_LIBMSPCONSOLE_PRINTF ?= 1
+
 include $(MAKER_ROOT)/Makefile.gcc
 
 CFLAGS += \
 	-I$(LIBCHAIN_ROOT)/src/include \
-	-I$(WISP_BASE_ROOT)
+	-I$(WISP_BASE_ROOT) \
+	-I$(LIBEDB_ROOT)/src/include \
 
-ifdef LIBCHAIN_ENABLE_DIAGNOSTICS
+ifeq ($(LIBCHAIN_ENABLE_DIAGNOSTICS),1)
 CFLAGS += -DLIBCHAIN_ENABLE_DIAGNOSTICS
+endif
+
+ifeq ($(CONFIG_LIBEDB_PRINTF),1)
+CFLAGS += -DCONFIG_LIBEDB_PRINTF
+LIBS += -ledb
+LFLAGS += -L$(LIBEDB_ROOT)/gcc
+endif
+
+ifeq ($(CONFIG_LIBMSPCONSOLE_PRINTF),1)
+CFLAGS += -DCONFIG_LIBMSPCONSOLE_PRINTF
+LIBS += -lmspconsole
+LFLAGS += -L$(LIBMSPCONSOLE_ROOT)/bld/gcc
 endif
 
 LFLAGS += \
 	-L$(WISP_BASE_ROOT)/gcc \
 	-L$(LIBCHAIN_ROOT)/bld/gcc \
-	-L$(LIBMSPCONSOLE_ROOT)/bld/gcc \
 
-LIBS = \
+LIBS += \
     -lwisp-base \
     -lchain \
-    -lmspconsole
 
 VPATH = ../../src

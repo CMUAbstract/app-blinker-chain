@@ -6,6 +6,13 @@
 #include <wisp-base.h>
 #include <libchain/chain.h>
 
+#include <wisp-base.h>
+#include <libchain/chain.h>
+
+#ifdef CONFIG_LIBEDB_PRINTF
+#include <libedb/edb.h>
+#endif
+
 #include "pin_assign.h"
 
 #define INIT_TASK_DURATION_ITERS  400000
@@ -14,6 +21,14 @@
 #define WAIT_TICK_DURATION_ITERS  300000
 #define NUM_BLINKS_PER_TASK       5
 #define WAIT_TICKS                3
+
+#ifdef CONFIG_LIBEDB_PRINTF
+#define printf(...) BARE_PRINTF(__VA_ARGS__)
+#else // CONFIG_LIBEDB_PRINTF
+#ifndef CONFIG_LIBMSPCONSOLE_PRINTF
+#define printf(...)
+#endif // CONFIG_LIBMSPCONSOLE_PRINTF
+#endif
 
 // If you link-in wisp-base, then you have to define some symbols.
 uint8_t usrBank[USRBANK_SIZE];
@@ -61,7 +76,11 @@ void init()
     GPIO(PORT_LED_3, DIR) |= BIT(PIN_LED_3);
 #endif
 
+#if defined(CONFIG_LIBEDB_PRINTF)
+    BARE_PRINTF_ENABLE();
+#elif defined(CONFIG_LIBMSPCONSOLE_PRINTF)
     UART_init();
+#endif
 
     __enable_interrupt();
 
