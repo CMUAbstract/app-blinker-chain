@@ -45,10 +45,10 @@ struct msg_duty_cycle {
     CHAN_FIELD(unsigned, duty_cycle);
 };
 
-TASK(0, task_init)
-TASK(1, task_1)
-TASK(2, task_2)
-TASK(3, task_3)
+TASK(1, task_init)
+TASK(2, task_1)
+TASK(3, task_2)
+TASK(4, task_3)
 
 CHANNEL(task_init, task_1, msg_blinks);
 CHANNEL(task_init, task_3, msg_tick);
