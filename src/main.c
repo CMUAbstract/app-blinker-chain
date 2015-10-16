@@ -8,6 +8,7 @@
 
 #include "pin_assign.h"
 
+#define INIT_TASK_DURATION_ITERS  400000
 #define TASK_START_DURATION_ITERS 200000
 #define BLINK_DURATION_ITERS      100000
 #define WAIT_TICK_DURATION_ITERS  300000
@@ -98,6 +99,14 @@ static void blink_led2(unsigned blinks, unsigned duty_cycle) {
 void task_init()
 {
     printf("init\r\n");
+
+    // Solid flash signifying beginning of task
+    GPIO(PORT_LED_1, OUT) |= BIT(PIN_LED_1);
+    GPIO(PORT_LED_2, OUT) |= BIT(PIN_LED_2);
+    burn(INIT_TASK_DURATION_ITERS);
+    GPIO(PORT_LED_1, OUT) &= ~BIT(PIN_LED_1);
+    GPIO(PORT_LED_2, OUT) &= ~BIT(PIN_LED_2);
+    burn(INIT_TASK_DURATION_ITERS);
 
     CHAN_OUT(blinks, NUM_BLINKS_PER_TASK, CH(task_init, task_1));
     CHAN_OUT(tick, 0, CH(task_init, task_3));
