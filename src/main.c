@@ -113,9 +113,13 @@ void task_init()
     GPIO(PORT_LED_2, OUT) &= ~BIT(PIN_LED_2);
     burn(INIT_TASK_DURATION_ITERS);
 
-    CHAN_OUT(blinks, NUM_BLINKS_PER_TASK, CH(task_init, task_1));
-    CHAN_OUT(tick, 0, CH(task_init, task_3));
-    CHAN_OUT(duty_cycle, 75, MC_OUT_CH(ch_duty_cycle, task_init, task_1, task_2));
+    unsigned blinks = NUM_BLINKS_PER_TASK;
+    CHAN_OUT1(unsigned, blinks, blinks, CH(task_init, task_1));
+    unsigned tick = 0;
+    CHAN_OUT1(unsigned, tick, tick, CH(task_init, task_3));
+    unsigned duty_cycle = 75;
+    CHAN_OUT1(unsigned, duty_cycle, duty_cycle,
+             MC_OUT_CH(ch_duty_cycle, task_init, task_1, task_2));
     TRANSITION_TO(task_1);
 }
 
@@ -132,15 +136,16 @@ void task_1()
     GPIO(PORT_LED_1, OUT) &= ~BIT(PIN_LED_1);
     burn(TASK_START_DURATION_ITERS);
 
-    blinks = *CHAN_IN2(blinks, CH(task_init, task_1), CH(task_2, task_1));
-    duty_cycle = *CHAN_IN1(duty_cycle, MC_IN_CH(ch_duty_cycle, task_init, task_1));
+    blinks = *CHAN_IN2(unsigned, blinks, CH(task_init, task_1), CH(task_2, task_1));
+    duty_cycle = *CHAN_IN1(unsigned, duty_cycle,
+                           MC_IN_CH(ch_duty_cycle, task_init, task_1));
 
     printf("task 1: blinks %u dc %u\r\n", blinks, duty_cycle);
 
     blink_led1(blinks, duty_cycle);
     blinks++;
 
-    CHAN_OUT(blinks, blinks, CH(task_1, task_2));
+    CHAN_OUT1(unsigned, blinks, blinks, CH(task_1, task_2));
 
     TRANSITION_TO(task_2);
 }
@@ -158,23 +163,24 @@ void task_2()
     GPIO(PORT_LED_2, OUT) &= ~BIT(PIN_LED_2);
     burn(TASK_START_DURATION_ITERS);
 
-    blinks = *CHAN_IN1(blinks, CH(task_1, task_2));
-    duty_cycle = *CHAN_IN1(duty_cycle, MC_IN_CH(ch_duty_cycle, task_init, task_2));
+    blinks = *CHAN_IN1(unsigned, blinks, CH(task_1, task_2));
+    duty_cycle = *CHAN_IN1(unsigned, duty_cycle,
+                           MC_IN_CH(ch_duty_cycle, task_init, task_2));
 
     printf("task 2: blinks %u dc %u\r\n", blinks, duty_cycle);
 
     blink_led2(blinks, duty_cycle);
     blinks++;
 
-    CHAN_OUT(blinks, blinks, CH(task_2, task_1));
+    CHAN_OUT1(unsigned, blinks, blinks, CH(task_2, task_1));
 
     TRANSITION_TO(task_3);
 }
 
 void task_3()
 {
-    unsigned wait_tick = *CHAN_IN2(tick, CH(task_init, task_3),
-                                         SELF_IN_CH(task_3));
+    unsigned wait_tick = *CHAN_IN2(unsigned, tick, CH(task_init, task_3),
+                                                   SELF_IN_CH(task_3));
 
     printf("task 3: wait tick %u\r\n", wait_tick);
 
@@ -186,10 +192,11 @@ void task_3()
     burn(WAIT_TICK_DURATION_ITERS);
 
     if (++wait_tick < WAIT_TICKS) {
-        CHAN_OUT(tick, wait_tick, SELF_OUT_CH(task_3));
+        CHAN_OUT1(unsigned, tick, wait_tick, SELF_OUT_CH(task_3));
         TRANSITION_TO(task_3);
     } else {
-        CHAN_OUT(tick, 0, SELF_OUT_CH(task_3));
+        unsigned tick = 0;
+        CHAN_OUT1(unsigned, tick, tick, SELF_OUT_CH(task_3));
         TRANSITION_TO(task_1);
     }
 }
