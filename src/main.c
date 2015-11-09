@@ -31,6 +31,11 @@ struct msg_tick {
     CHAN_FIELD(unsigned, tick);
 };
 
+struct msg_self_tick {
+    SELF_CHAN_FIELD(unsigned, tick);
+};
+#define NUM_FIELDS_msg_self_tick 1
+
 struct msg_duty_cycle {
     CHAN_FIELD(unsigned, duty_cycle);
 };
@@ -44,7 +49,7 @@ CHANNEL(task_init, task_1, msg_blinks);
 CHANNEL(task_init, task_3, msg_tick);
 CHANNEL(task_1, task_2, msg_blinks);
 CHANNEL(task_2, task_1, msg_blinks);
-SELF_CHANNEL(task_3, msg_tick);
+SELF_CHANNEL(task_3, msg_self_tick);
 MULTICAST_CHANNEL(msg_duty_cycle, ch_duty_cycle, task_init, task_1, task_2);
 
 volatile unsigned work_x;
@@ -103,6 +108,8 @@ static void blink_led2(unsigned blinks, unsigned duty_cycle) {
 
 void task_init()
 {
+    task_prologue();
+
     printf("init\r\n");
 
     // Solid flash signifying beginning of task
@@ -125,6 +132,8 @@ void task_init()
 
 void task_1()
 {
+    task_prologue();
+
     unsigned blinks;
     unsigned duty_cycle;
 
@@ -152,6 +161,8 @@ void task_1()
 
 void task_2()
 {
+    task_prologue();
+
     unsigned blinks;
     unsigned duty_cycle;
 
@@ -179,6 +190,8 @@ void task_2()
 
 void task_3()
 {
+    task_prologue();
+
     unsigned wait_tick = *CHAN_IN2(unsigned, tick, CH(task_init, task_3),
                                                    SELF_IN_CH(task_3));
 
