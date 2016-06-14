@@ -34,7 +34,9 @@ struct msg_tick {
 struct msg_self_tick {
     SELF_CHAN_FIELD(unsigned, tick);
 };
-#define NUM_FIELDS_msg_self_tick 1
+#define FIELD_INIT_msg_self_tick { \
+    SELF_FIELD_INITIALIZER \
+}
 
 struct msg_duty_cycle {
     CHAN_FIELD(unsigned, duty_cycle);
