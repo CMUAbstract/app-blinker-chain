@@ -129,7 +129,8 @@ void task_init()
     unsigned duty_cycle = 75;
     CHAN_OUT1(unsigned, duty_cycle, duty_cycle,
              MC_OUT_CH(ch_duty_cycle, task_init, task_1, task_2));
-    TRANSITION_TO(task_1);
+
+    TRANSITION_TO(task_3);
 }
 
 void task_1()
