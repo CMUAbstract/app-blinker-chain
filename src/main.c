@@ -5,7 +5,7 @@
 
 #include <wisp-base.h>
 #include <libchain/chain.h>
-#include <libio/printf.h>
+#include <libio/log.h>
 
 #ifdef CONFIG_LIBEDB_PRINTF
 #include <libedb/edb.h>
@@ -81,7 +81,7 @@ void init()
     GPIO(PORT_LED_3, OUT) |= BIT(PIN_LED_3);
 #endif
 
-    printf("chain app booted\r\n");
+    LOG("chain app booted\r\n");
 }
 
 static void blink_led1(unsigned blinks, unsigned duty_cycle) {
@@ -112,7 +112,7 @@ void task_init()
 {
     task_prologue();
 
-    printf("init\r\n");
+    LOG("init\r\n");
 
     // Solid flash signifying beginning of task
     GPIO(PORT_LED_1, OUT) |= BIT(PIN_LED_1);
@@ -139,7 +139,7 @@ void task_1()
     unsigned blinks;
     unsigned duty_cycle;
 
-    printf("task 1\r\n");
+    LOG("task 1\r\n");
 
     // Solid flash signifying beginning of task
     GPIO(PORT_LED_1, OUT) |= BIT(PIN_LED_1);
@@ -151,7 +151,7 @@ void task_1()
     duty_cycle = *CHAN_IN1(unsigned, duty_cycle,
                            MC_IN_CH(ch_duty_cycle, task_init, task_1));
 
-    printf("task 1: blinks %u dc %u\r\n", blinks, duty_cycle);
+    LOG("task 1: blinks %u dc %u\r\n", blinks, duty_cycle);
 
     blink_led1(blinks, duty_cycle);
     blinks++;
@@ -168,7 +168,7 @@ void task_2()
     unsigned blinks;
     unsigned duty_cycle;
 
-    printf("task 2\r\n");
+    LOG("task 2\r\n");
 
     // Solid flash signifying beginning of task
     GPIO(PORT_LED_2, OUT) |= BIT(PIN_LED_2);
@@ -180,7 +180,7 @@ void task_2()
     duty_cycle = *CHAN_IN1(unsigned, duty_cycle,
                            MC_IN_CH(ch_duty_cycle, task_init, task_2));
 
-    printf("task 2: blinks %u dc %u\r\n", blinks, duty_cycle);
+    LOG("task 2: blinks %u dc %u\r\n", blinks, duty_cycle);
 
     blink_led2(blinks, duty_cycle);
     blinks++;
@@ -197,7 +197,7 @@ void task_3()
     unsigned wait_tick = *CHAN_IN2(unsigned, tick, CH(task_init, task_3),
                                                    SELF_IN_CH(task_3));
 
-    printf("task 3: wait tick %u\r\n", wait_tick);
+    LOG("task 3: wait tick %u\r\n", wait_tick);
 
     GPIO(PORT_LED_1, OUT) |= BIT(PIN_LED_1);
     GPIO(PORT_LED_2, OUT) |= BIT(PIN_LED_2);
