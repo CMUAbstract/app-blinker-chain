@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include <wisp-base.h>
+#include <libwispbase/wisp-base.h>
 #include <libchain/chain.h>
 #include <libio/log.h>
 
