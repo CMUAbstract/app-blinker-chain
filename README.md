@@ -8,9 +8,9 @@ using the tasks-and-channels abstraction of
 Toolchains
 ==========
 
-The following toolchains must be installed on the system:
+The following toolchains must be installed on the system.
 
-* MSP430 GCC distributed by TI
+## MSP430 GCC distributed by TI
 
 TI MSP430 GCC Toolchain is the cross-compiler used to build executables for the
 MSP430 platform.
@@ -21,8 +21,9 @@ MSP430 platform.
 
 Arch Linux package (from AUR): `mspgcc-ti`, installed to `/opt/ti/mspgcc`
 
-* *Optional*: LLVM/Clang with MSP430 backend (**TODO: building this app with
-  Clang is not yet supported)
+## *Optional*: LLVM/Clang with MSP430 backend
+
+**TODO: building this app with Clang is not yet supported**
 
 Build and Run
 =============
