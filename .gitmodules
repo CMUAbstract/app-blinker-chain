@@ -1,0 +1,15 @@
+[submodule "ext/libchain"]
+	path = ext/libchain
+	url = git@github.com:CMUAbstract/libchain.git
+[submodule "ext/libio"]
+	path = ext/libio
+	url = git@github.com:CMUAbstract/libio.git
+[submodule "ext/libedb"]
+	path = ext/libedb
+	url = git@github.com:CMUAbstract/libedb.git
+[submodule "ext/maker"]
+	path = ext/maker
+	url = git@github.com:CMUAbstract/maker.git
+[submodule "ext/libwispbase"]
+	path = ext/libwispbase
+	url = git@github.com:CMUAbstract/libwispbase.git
