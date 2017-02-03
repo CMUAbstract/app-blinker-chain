@@ -7,6 +7,7 @@ DEPS += \
 	libchain \
 	libmsp \
 	libwispbase \
+	libio \
 
 CONFIG_EDB ?= 0
 #CONFIG_PRINTF_LIB ?= libedb
