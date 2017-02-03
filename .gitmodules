@@ -13,3 +13,6 @@
 [submodule "ext/libwispbase"]
 	path = ext/libwispbase
 	url = git@github.com:CMUAbstract/libwispbase.git
+[submodule "ext/libmsp"]
+	path = ext/libmsp
+	url = git@github.com:CMUAbstract/libmsp.git
