@@ -64,6 +64,21 @@ Set paths to toolchains (see `Makefile.env` in
     export DEV_ROOT=/path/to/llvm/parent/dir
 
 
+The app can output to a console using `libio`. Select a backend for `libio` by
+setting `CONFIG_PRINTF_LIB` in `bld/Makefile`:
+
+* `libmspconsole`: hardware UART (using implementation in `libwispbase`)
+* `libmspsoftuart`: software UART using a timer (using implementation in `libwispbase`)
+* `libedb`: energy-compensated output using EDB
+
+At this time, only `libmspconsole` backend is setup and tested. The `libmspconsole`
+implementation is legacy, so is not parametrizable from the Makefile. The UART
+pins are hardcoded in `ext/libwisbase/src/include/libwispbase/pin-assign.h`.
+
+The app code includes `libio/log.h` and/or `libio/printf.h`, and uses `LOG()`
+and/or `PRINTF(..)`. The `LOG` statements are enabled when building with `make
+VERBOSE=1 ...`. `PRINTF` statements are always enabled.
+
 Compile
 -------
 
