@@ -11,6 +11,7 @@ DEPS += \
 
 CONFIG_EDB ?= 0
 #CONFIG_PRINTF_LIB ?= libedb
+CONFIG_PRINTF_LIB ?= libmspconsole
 #CONFIG_LIBEDB_PRINTF ?= eif
 include $(MAKER_ROOT)/Makefile.console
 

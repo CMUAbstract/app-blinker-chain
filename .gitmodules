@@ -16,3 +16,9 @@
 [submodule "ext/libmsp"]
 	path = ext/libmsp
 	url = https://github.com/CMUAbstract/libmsp.git
+[submodule "ext/libmspconsole"]
+	path = ext/libmspconsole
+	url = https://github.com/CMUAbstract/libmspconsole
+[submodule "ext/libmspprintf"]
+	path = ext/libmspprintf
+	url = https://github.com/CMUAbstract/libmspprintf
