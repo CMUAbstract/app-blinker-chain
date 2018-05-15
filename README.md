@@ -70,7 +70,7 @@ setting `LIBIO_BACKEND` in `bld/Makefile`:
 * `swuart`: software "bit-banged" UART (see libmspsoftuart)
 * `edb`: energy-compensated output using EDB (TODO: currently broken)
 
-The app code uses 'libio` console interface, with `LOG()` and/or `PRINTF(..)`.
+The app code uses `libio` console interface, with `LOG()` and/or `PRINTF(..)`.
 The `LOG` statements are enabled when building with `make VERBOSE=2 ...`.
 `PRINTF` statements are enabled with `VERBOSE=1`. All output is completely
 disabled with `VERBOSE=0`.
