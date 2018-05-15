@@ -5,26 +5,6 @@ An application that blinks two LEDs, alternating between them, implemented
 using the tasks-and-channels abstraction of
 [Chain](https://github.com/CMUAbstract/libchain).
 
-Toolchains
-==========
-
-The following toolchains must be installed on the system.
-
-### MSP430 GCC distributed by TI
-
-TI MSP430 GCC Toolchain is the cross-compiler used to build executables for the
-MSP430 platform.
-
-*Version*: Only v3.05 is supported; changes in v4.00 appear to not be backward compatible.
-
-*Upstream*: http://www.ti.com/tool/msp430-gcc-opensource
-
-Arch Linux package (from AUR): `mspgcc-ti`, installed to `/opt/ti/mspgcc`
-
-### *Optional*: LLVM/Clang with MSP430 backend
-
-**TODO: building this app with Clang is not yet supported**
-
 Build and Run
 =============
 
@@ -37,6 +17,13 @@ this way the app can control the exact version/commit of each library, while
 the library upstream is free to evolve. Dependencies are rebuilt along with the
 app on purpose so that compiler flags are consistent. Dependencies are
 specified in `bld/Makefile`.
+
+Maker wraps third-party toolchains. To build this app, the TI MSP430 GCC
+Toolchain (cross-compiler for MSP430) must be installed on the system. See
+[documentation on
+Toolchains](https://github.com/CMUAbstract/releases/blob/master/Toolchains.md).
+
+Building with LLVM/Clang is not currently setup, but is supported by Maker.
 
 Clone
 -----
