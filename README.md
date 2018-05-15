@@ -54,33 +54,32 @@ in [Maker](https://github.com/CMUAbstract/maker) for a list of supported boards)
 
     export BOARD=mspts430
 
-Configure library parameters in `bld/Makefile` as desired, e.g. MCU frequency,
-console output mechanism, etc.
-
 Set paths to toolchains (see `Makefile.env` in
 [Maker](https://github.com/CMUAbstract/maker) for more details):
 
     export TOOLCHAIN_ROOT=/path/to/mspgcc
     export DEV_ROOT=/path/to/llvm/parent/dir
 
+Configure library parameters in `bld/Makefile` as desired, e.g. MCU frequency,
+console output mechanism, etc.
 
 The app can output to a console using `libio`. Select a backend for `libio` by
-setting `CONFIG_PRINTF_LIB` in `bld/Makefile`:
+setting `LIBIO_BACKEND` in `bld/Makefile`:
 
-* `libmspconsole`: hardware UART (using implementation in `libwispbase`)
-* `libmspsoftuart`: software UART using a timer (using implementation in `libwispbase`)
-* `libedb`: energy-compensated output using EDB
+* `hwuart`: hardware UART (implementation in libmsp)
+* `swuart`: software "bit-banged" UART (see libmspsoftuart)
+* `edb`: energy-compensated output using EDB (TODO: currently broken)
 
-At this time, only `libmspconsole` backend is setup and tested. The `libmspconsole`
-implementation is legacy, so is not parametrizable from the Makefile. The UART
-pins are hardcoded in `ext/libwisbase/src/include/libwispbase/pin-assign.h`.
-
-The app code includes `libio/log.h` and/or `libio/printf.h`, and uses `LOG()`
-and/or `PRINTF(..)`. The `LOG` statements are enabled when building with `make
-VERBOSE=1 ...`. `PRINTF` statements are always enabled.
+The app code uses 'libio` console interface, with `LOG()` and/or `PRINTF(..)`.
+The `LOG` statements are enabled when building with `make VERBOSE=2 ...`.
+`PRINTF` statements are enabled with `VERBOSE=1`. All output is completely
+disabled with `VERBOSE=0`.
 
 Compile
 -------
+
+See [Maker documentation](https://github.com/CMUAbstract/Maker) for detailed
+guide for building with Maker. A summary is given below:
 
 The general make target convention is `bld/<toolchain>/<target>`.  This app
 supports two toolchains: `gcc` and `clang` (**TODO**: clang, not yet).
