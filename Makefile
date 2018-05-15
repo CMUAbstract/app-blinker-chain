@@ -1,4 +1,5 @@
-export BOARD ?= mspts430
+#export BOARD ?= mspts430
+export BOARD ?= msp-exp430fr5994
 
 TOOLS = \
 

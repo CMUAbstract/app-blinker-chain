@@ -3,13 +3,11 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include <libwispbase/wisp-base.h>
+#include <libmsp/watchdog.h>
+#include <libmsp/gpio.h>
+#include <libmsp/periph.h>
 #include <libchain/chain.h>
-#include <libio/log.h>
-
-#ifdef CONFIG_LIBEDB_PRINTF
-#include <libedb/edb.h>
-#endif
+#include <libio/console.h>
 
 #include "pin_assign.h"
 
@@ -19,9 +17,6 @@
 #define WAIT_TICK_DURATION_ITERS  300000
 #define NUM_BLINKS_PER_TASK       5
 #define WAIT_TICKS                3
-
-// If you link-in wisp-base, then you have to define some symbols.
-uint8_t usrBank[USRBANK_SIZE];
 
 struct msg_blinks {
     CHAN_FIELD(unsigned, blinks);
@@ -63,9 +58,9 @@ static void burn(uint32_t iters)
         work_x++;
 }
 
-void init()
-{
-    WISP_init();
+int main() {
+    msp_watchdog_disable();
+    msp_gpio_unlock();
 
     GPIO(PORT_LED_1, DIR) |= BIT(PIN_LED_1);
     GPIO(PORT_LED_2, DIR) |= BIT(PIN_LED_2);
@@ -110,8 +105,6 @@ static void blink_led2(unsigned blinks, unsigned duty_cycle) {
 
 void task_init()
 {
-    task_prologue();
-
     LOG("init\r\n");
 
     // Solid flash signifying beginning of task
@@ -135,8 +128,6 @@ void task_init()
 
 void task_1()
 {
-    task_prologue();
-
     unsigned blinks;
     unsigned duty_cycle;
 
@@ -164,8 +155,6 @@ void task_1()
 
 void task_2()
 {
-    task_prologue();
-
     unsigned blinks;
     unsigned duty_cycle;
 
@@ -193,8 +182,6 @@ void task_2()
 
 void task_3()
 {
-    task_prologue();
-
     unsigned wait_tick = *CHAN_IN2(unsigned, tick, CH(task_init, task_3),
                                                    SELF_IN_CH(task_3));
 
@@ -218,4 +205,3 @@ void task_3()
 }
 
 ENTRY_TASK(task_init)
-INIT_FUNC(init)
