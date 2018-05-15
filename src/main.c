@@ -77,6 +77,7 @@ int main() {
 #endif
 
     LOG("chain app booted\r\n");
+    return chain_main();
 }
 
 static void blink_led1(unsigned blinks, unsigned duty_cycle) {
