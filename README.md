@@ -1,3 +1,5 @@
+**DEPRECATED**: has been merged into main app repo as [branch chain](https://github.com/CMUAbstract/app-blinker/tree/chain).
+
 An LED Blinker Application
 ==========================
 
